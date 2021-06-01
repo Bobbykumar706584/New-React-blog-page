@@ -7,11 +7,12 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import Create from './Create';
 import Button from '@material-ui/core/Button'
 import { useHistory } from 'react-router-dom';
 import Modal from '@material-ui/core/Modal';
+import Create from './Create';
 import Update from './Update'
+
 const useStyles = makeStyles((theme) => ({
     table: {
         minWidth: 650,
@@ -37,6 +38,7 @@ const useStyles = makeStyles((theme) => ({
     }
   }));
 
+
 const Post = () => {
     const classes = useStyles();
     const [posts, setPosts] = useState([]);
@@ -49,12 +51,15 @@ const Post = () => {
     const handleClose = () =>{
         setOpen(false)
     }
-    
+
     //fetching all the users
     const fetchUserData = (e) =>{
-        fetch("http://localhost:8000/blogs")
+        fetch("http://localhost:8000/blogs/")
         .then((res) => res.json())
         .then((data) => setPosts(data))
+        .catch((err) =>{
+            console.log(err)
+        })
     }
     //deleting users
     const handleDelete = (id) =>{
@@ -63,6 +68,7 @@ const Post = () => {
 		})
 		.then(() => {
 			history.push('/')
+            window.location.reload();
 		})
     }
 
@@ -86,7 +92,7 @@ const Post = () => {
                     </TableHead>
                     <TableBody>
                         {posts.map(post =>(
-                            <TableRow id={post.id}>
+                            <TableRow key={post.id}>
                                 <TableCell component="th" scope="row">
                                     {post.username}
                                 </TableCell>
@@ -94,10 +100,10 @@ const Post = () => {
                                 <TableCell>{post.title}</TableCell>
                                 <TableCell>{post.body}</TableCell>
                                 <TableCell>
-                                    <Button variant="outlined" onClick={() => {handleDelete(post.id)}}>Delete</Button>
+                                    <Button variant="outlined" color="secondary" onClick={() => {handleDelete(post.id)}}>Delete</Button>
                                 </TableCell>
                                 <TableCell>
-                                    <Button variant="outlined" color="secondary" onClick={() => {handleClick(post.id)}}>Edit</Button>
+                                    <Button variant="outlined" color="primary" onClick={handleClick}>Edit</Button>
                                 </TableCell>
                             </TableRow>
                         ))}

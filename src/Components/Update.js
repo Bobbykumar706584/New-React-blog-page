@@ -10,8 +10,8 @@ const Update = () => {
     const [username, setUsername] = useState("")
     const history = useHistory()
     const [isPending, setIsPending] = useState(false);
-    const [post, setPosts] = useState([])
     const [open, setOpen] = useState(false);
+
 
     const handleOpen = () => {
         setOpen(true);
@@ -26,12 +26,6 @@ const Update = () => {
 
     function Alert(props) {
         return <MuiAlert elevation={4} variant="filled" {...props} />;
-    }
-    
-    const getById = () => {
-        fetch("http://localhost:8000/blogs/")
-        .then((res) => res.json())
-        .then((datas) => setUsernames(datas)) 
     }
      
     //Update handler for form
@@ -54,15 +48,17 @@ const Update = () => {
 
 
    useEffect(() => {
-    getById()
+    fetch("http://localhost:8000/blogs/")
+    .then((res) => res.json())
+    .then((datas) => setUsernames(datas)) 
    }, [])
 
     return (
         <form className='update' onSubmit={handleUpdate}>
             <label>Blog title: </label>
-            <input type="text" required value={title} onChange={(e) => setTitle(e.target.value)}/>
+            <input type="text" value={title} onChange={(e) => setTitle(e.target.value)}/>
             <label>Blog body: </label>
-            <textarea required value={body} onChange={(e) => setBody(e.target.value)}> </textarea>
+            <textarea value={body} onChange={(e) => setBody(e.target.value)}> </textarea>
             <label>Blog username: </label>
             <select onChange={(e) => setUsername(e.target.value)}>
                 {usernames.map(item => (

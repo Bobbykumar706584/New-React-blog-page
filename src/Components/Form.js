@@ -40,7 +40,6 @@ const Form = ()=> {
     const handleSubmit = () => {
         const blog = {title, body, username}
         setIsPending(true)
-        console.log(blog)
         
         fetch("http://localhost:8000/blogs", {
             method: "POST",
