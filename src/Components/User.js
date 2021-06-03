@@ -1,12 +1,7 @@
 import { useState } from "react";
 import { makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
+import MUIDataTable from "mui-datatables";
+
 import Modal from '@material-ui/core/Modal';
 
 import SinglePost from './SinglePost';
@@ -26,10 +21,10 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2, 4, 3),
     overflow: 'auto',
     height: '70vh'
-},
-close:{
-  float: "right",
-}
+  },
+  close:{
+    float: "right",
+  }
 }));
 
 const User = ({users, posts}) =>{
@@ -38,58 +33,92 @@ const User = ({users, posts}) =>{
     const [id, setId] = useState(null)
     const [username, setUsername] = useState('')
 
-    const handleClick = () => {
+    const handleClick = (id, username) => {
       setOpen(true)
+      setId(id)
+      setUsername(username)
     }
     const handleClose = () => {
       setOpen(false)
     }
 
-    const openRow = (id, username) => {
-      handleClick()
-      setUsername(username)
-      setId(id)
-    }
+    const columns = [
+      {
+       name: "id",
+       label: "Post id",
+       options: {
+        filter: true,
+        sort: true,
+       }
+      },
+      {
+       name: "name",
+       label: "Name",
+       options: {
+        filter: true,
+        sort: false,
+       }
+      },
+      {
+       name: "username",
+       label: "Username",
+       options: {
+        filter: true,
+        sort: false,
+       }
+      },
+      {
+       name: "email",
+       label: "Email",
+       options: {
+        filter: true,
+        sort: false,
+       }
+      },
+      {
+       name: "website",
+       label: "Website",
+       options: {
+        filter: true,
+        sort: false,
+       }
+      },
+      {
+       name: "company",
+       label: "Company",
+       options: {
+        filter: true,
+        sort: false,
+       }
+      }
+  ]; 
 
+    const handleRowClick = (rowData) => {
+      handleClick(rowData[0], rowData[2])
+      console.log(rowData)
+  };
+
+    const options = {
+      filterType: 'checkbox',
+      onRowClick: handleRowClick,
+    };
     return (
       <div>
-      <TableContainer component={Paper}>
-      <Table className={classes.table} aria-label="customized table">
-        <TableHead>
-          <TableRow>
-            <TableCell>Id</TableCell>
-            <TableCell>Name</TableCell>
-            <TableCell>Username</TableCell>
-            <TableCell>Email</TableCell>
-            <TableCell>Website</TableCell>
-            <TableCell>Company</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {users.map((user) => (
-            <TableRow key={user.id} onClick={() => openRow(user.id, user.username)}>
-              <TableCell component="th" scope="row">
-                {user.id}
-              </TableCell>
-              <TableCell>{user.name}</TableCell>
-              <TableCell>{user.username}</TableCell>
-              <TableCell>{user.email}</TableCell>
-              <TableCell>{user.website}</TableCell>
-              <TableCell>{user.company.name}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer> 
-    <Modal
-      open={open}
-      onClose={handleClose}
-      >
-      <div className={classes.paper}>
-        <button className={classes.close} onClick={handleClose}>X</button>
-        <SinglePost posts={posts} id={id} username={username}/>
-      </div>
-  </Modal>
+        <MUIDataTable
+              title={username}
+              data={users}
+              columns={columns}
+              options={options}
+            />
+        <Modal
+          open={open}
+          onClose={handleClose}
+          >
+          <div className={classes.paper}>
+            <button className={classes.close} onClick={handleClose}>X</button>
+            <SinglePost posts={posts} id={id} username={username}/>
+          </div>
+      </Modal>
   </div>
    );
 }

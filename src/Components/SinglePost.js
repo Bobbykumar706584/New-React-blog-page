@@ -44,7 +44,6 @@ const SinglePost = ({posts, id, username}) => {
     useEffect(() => {
         showRowbyUser()
     }, [posts])
-    console.log(singlePost)
 
     return (
         <MUIDataTable

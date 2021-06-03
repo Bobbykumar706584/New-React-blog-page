@@ -3,15 +3,14 @@ import MuiAlert from '@material-ui/lab/Alert';
 import { useState, useEffect } from "react"
 import { useHistory } from "react-router-dom"
 
-const Update = ({posts, users,postId}) => {
+const Update = ({users,postId}) => {
     const [title, setTitle] = useState("")
     const [body, setBody] = useState("");
-    const [usernames, setUsernames] = useState([])
     const [username, setUsername] = useState("")
     const history = useHistory()
     const [isPending, setIsPending] = useState(false);
     const [open, setOpen] = useState(false);
-    const [showPost, setShowPost] = useState([]);
+    const [id, setId ] = useState('')
 
 
     const handleOpen = () => {
@@ -29,31 +28,13 @@ const Update = ({posts, users,postId}) => {
         return <MuiAlert elevation={4} variant="filled" {...props} />;
     }
 
-    console.log(postId)
-    const getAllUser = () => {
-        fetch("https://jsonplaceholder.typicode.com/users")
-        .then(res => res.json())
-        .then(data => {
-            setUsernames(data)
-        })
-    }
-
-    const getAllPost = () => {
-        fetch("http://localhost:8000/blogs/"+postId)
-        .then(res => res.json())
-        .then(data => {
-            setShowPost(data)
-            console.log(data)
-        })
-    }
-  
     //Update handler for form
     const handleUpdate = () => {
         setIsPending(true)
         const data = {title, body, username}
         console.log(data)
 
-        fetch("http://localhost:8000/blogs/" + postId, {
+        fetch("https://jsonplaceholder.typicode.com/posts/" + postId, {
             method: "PUT",
             headers: {"Content-Type" : "application/json"},
             body: JSON.stringify(data)
@@ -67,16 +48,18 @@ const Update = ({posts, users,postId}) => {
 
 
    useEffect(() => {
-    getAllUser()
-    getAllPost()
+        fetch("https://jsonplaceholder.typicode.com/posts/"+postId)
+        .then(res => res.json())
+        .then(data => {
+            setTitle(data.title)
+            setBody(data.body)
+            setUsername(data.username)
+            setId(data.id)
+        }, [])
 
-    // if (showPost) {
-    //     setTitle(showPost.title)
-    //     setBody(showPost.body)
-    //     setUsername(showPost.username)
-    // }
 
-   }, [showPost])
+
+   }, [id])
 
     return (
         <form className='update' onSubmit={handleUpdate}>
@@ -85,8 +68,8 @@ const Update = ({posts, users,postId}) => {
             <label>Blog body: </label>
             <textarea value={body} onChange={(e) => setBody(e.target.value)}> </textarea>
             <label>Blog username: </label>
-             <select onChange={(e) => setUsername(e.target.value)}>
-                {usernames.map(item => (
+             <select value={username} onChange={(e) => setUsername(e.target.value)}>
+                {users.map(item => (
                     <option value={item.username}>{item.username}</option>
                 ))}
             </select>

@@ -66,7 +66,7 @@ export default function Header() {
   };
 
   const getAllPostDetails = () => {
-    fetch('http://localhost:8000/blogs')
+    fetch('https://jsonplaceholder.typicode.com/posts')
     .then((responses) => responses.json())
     .then(data => {
       setPosts(data)
@@ -80,7 +80,11 @@ export default function Header() {
     fetch("https://jsonplaceholder.typicode.com/users")
     .then((res) => res.json())
     .then((result) => {
-      setUsers(result)
+      const showUser = result.map(user => {
+        user.company = user.company.name
+        return user
+      })
+      setUsers(showUser)      
     })
   }
 

@@ -1,13 +1,7 @@
 import React, {useState, useEffect}from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import Button from '@material-ui/core/Button'
+import MUIDataTable from "mui-datatables";
+
 import { useHistory } from 'react-router-dom';
 import Modal from '@material-ui/core/Modal';
 import Create from './Create';
@@ -75,30 +69,18 @@ const Post = ({posts, users}) => {
                 ...a1.find((item) => (item.id === itm.userId)),
                 ...itm
             }));
-
-            // console.log(mergeById(responseTwo, responseOne))
             setItems(mergeById(posts, users))
-    
     }
-    //fetching all the users
-    // const fetchUserData = (e) =>{
-    //     fetch("http://localhost:8000/blogs/")
-    //     .then((res) => res.json())
-    //     .then((data) => setPosts(data))
-    //     .catch((err) =>{
-    //         console.log(err)
-    //     })
-    // }
-
     //deleting users
-    const handleDelete = (id) =>{
+    const handleDelete = (item, index) =>{
         snackSetOpen(true)
-        fetch("http://localhost:8000/blogs/"+id, {
+        console.log(item[index])
+        
+        fetch("https://jsonplaceholder.typicode.com/posts/"+item[index].id, {
 			method: "DELETE",
 		})
 		.then(() => {
 			history.push('/')
-            window.location.reload();
 		})
         .catch((err) => {
             console.log(err)
@@ -108,41 +90,85 @@ const Post = ({posts, users}) => {
     useEffect(() => {
         getAllDataById()
     }, [])
-    
+
+    const columns = [
+        {
+         name: "username",
+         label: "Username",
+         options: {
+          filter: true,
+          sort: true,
+         }
+        },
+        {
+         name: "id",
+         label: "ID",
+         options: {
+          filter: true,
+          sort: false,
+         }
+        },
+        {
+         name: "title",
+         label: "Title",
+         options: {
+          filter: true,
+          sort: false,
+         }
+        },
+        {
+         name: "body",
+         label: "Body",
+         options: {
+          filter: true,
+          sort: false,
+         }
+        },
+        {
+            name: "Delete",
+            options: {
+                filter: true,
+                sort: false,
+                empty: true,
+                customBodyRenderLite: (rowIndex) => {
+                    return (
+                        <button onClick={() => {handleDelete(items, rowIndex)}}>
+                            Delete 
+                        </button>
+                    );
+                }
+            }
+          },
+          {
+            name: "Edit",
+            options: {
+                filter: true,
+                sort: false,
+                empty: true,
+                customBodyRender: (value, tableMeta, updateValue) => {
+                    return (
+                        <button onClick={() => {handleClick(tableMeta.rowData[1])}}>
+                            Edit
+                        </button>
+                    );
+                }
+            }
+          }
+    ]; 
+
+
+    const options = {
+        filterType: 'checkbox',
+        selectableRows:'single',
+        selectableRowsOnClick: true,
+    };
     return(
         <div className="container">
-            <TableContainer component={Paper}>
-                <Table className={classes.table} size="small" aria-label="a dense table">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Username</TableCell>
-                            <TableCell>Id</TableCell>
-                            <TableCell>Title</TableCell>
-                            <TableCell>Body</TableCell>
-                            <TableCell>Delete</TableCell>
-                            <TableCell>Edit</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {items.map(post =>(
-                            <TableRow key={post.id}>
-                                <TableCell component="th" scope="row">
-                                    {post.username}
-                                </TableCell>
-                                <TableCell>{post.id}</TableCell>
-                                <TableCell>{post.title}</TableCell>
-                                <TableCell>{post.body}</TableCell>
-                                <TableCell>
-                                    <Button variant="outlined" color="secondary" onClick={() => {handleDelete(post.id)}}>Delete</Button>
-                                </TableCell>
-                                <TableCell>
-                                    <Button variant="outlined" color="primary" onClick={() => {handleClick(post.id)}}>Edit</Button>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
+            <MUIDataTable
+              data={items}
+              columns={columns}
+              options={options}
+            />
             <Snackbar open={snackOpen} autoHideDuration={6000} onClose={handleCloseSnack}>
                 <Alert severity="success">
                     Post deleted successfully.
@@ -153,7 +179,6 @@ const Post = ({posts, users}) => {
                 open={open}
                 onClose={handleClose}
                 >
-                
                 <div className={classes.paper}>
                     <button className={classes.close} onClick={handleClose}>X</button>
                     <h2 id="simple-modal-title">Update blog</h2>
