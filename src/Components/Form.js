@@ -25,7 +25,7 @@ const Form = ()=> {
     };
 
     function Alert(props) {
-    return <MuiAlert elevation={4} variant="filled" {...props} />;
+        return <MuiAlert elevation={4} variant="filled" {...props} />;
     }  
 
     const getAllUser = () => {
@@ -35,7 +35,6 @@ const Form = ()=> {
             setUsernames(data)
         })
     }
-    getAllUser()
 
     const handleSubmit = () => {
         const blog = {title, body, username}
@@ -63,9 +62,9 @@ const Form = ()=> {
                 <label>Blog body: </label>
                 <textarea required value={body} onChange={(e) => setBody(e.target.value)}> </textarea>
                 <label>Blog Username: </label>
-                <select required onChange={(e) => setUsername(e.target.value)}>
+                <select onChange={(e) => setUsername(e.target.value)}>
                     {usernames.map(item => (
-                        <option value={item.username} id={item.id}>{item.username}</option>
+                        <option value={item.username} required id={item.id}>{item.username}</option>
                     ))}
                 </select>
                 {!isPending && (<button onClick={handleOpen}>Add blog</button>) }

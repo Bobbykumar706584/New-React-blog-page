@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -7,24 +7,52 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import Modal from '@material-ui/core/Modal';
 
-const useStyles = makeStyles({
+import SinglePost from './SinglePost';
+
+const useStyles = makeStyles((theme) => ({
   table: {
     minWidth: 650,
   },
-});
+  paper: {
+    position: 'relative',
+    width: 700,
+    top: 200,
+    left: 600,
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+    overflow: 'auto',
+    height: '70vh'
+},
+close:{
+  float: "right",
+}
+}));
 
-const User = () =>{
+const User = ({users, posts}) =>{
     const classes = useStyles();
-    const [users, setUsers] = useState([])
+    const [open, setOpen] = useState(false)
+    const [id, setId] = useState(null)
+    const [username, setUsername] = useState('')
 
-    useEffect(() => {
-        fetch("https://jsonplaceholder.typicode.com/users")
-        .then((res) => res.json())
-        .then((result) => setUsers(result))
-    }, [])
+    const handleClick = () => {
+      setOpen(true)
+    }
+    const handleClose = () => {
+      setOpen(false)
+    }
+
+    const openRow = (id, username) => {
+      handleClick()
+      setUsername(username)
+      setId(id)
+    }
 
     return (
+      <div>
       <TableContainer component={Paper}>
       <Table className={classes.table} aria-label="customized table">
         <TableHead>
@@ -39,7 +67,7 @@ const User = () =>{
         </TableHead>
         <TableBody>
           {users.map((user) => (
-            <TableRow key={user.id}>
+            <TableRow key={user.id} onClick={() => openRow(user.id, user.username)}>
               <TableCell component="th" scope="row">
                 {user.id}
               </TableCell>
@@ -53,6 +81,16 @@ const User = () =>{
         </TableBody>
       </Table>
     </TableContainer> 
+    <Modal
+      open={open}
+      onClose={handleClose}
+      >
+      <div className={classes.paper}>
+        <button className={classes.close} onClick={handleClose}>X</button>
+        <SinglePost posts={posts} id={id} username={username}/>
+      </div>
+  </Modal>
+  </div>
    );
 }
 

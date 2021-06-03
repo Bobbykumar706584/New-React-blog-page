@@ -1,6 +1,4 @@
-import React from 'react';
 import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -10,6 +8,10 @@ import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import User from './User';
 import Post from './Post';
+
+import { useEffect, useState } from "react";
+import { makeStyles } from '@material-ui/core/styles';
+
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -54,11 +56,39 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Header() {
   const classes = useStyles();
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = useState(0);
+  const [users, setUsers] = useState([])
+  const [posts, setPosts] = useState([])
+
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  const getAllPostDetails = () => {
+    fetch('http://localhost:8000/blogs')
+    .then((responses) => responses.json())
+    .then(data => {
+      setPosts(data)
+    })
+    .catch(err => {
+      console.error(err)
+    })
+  }
+
+  const getAllTheUsers = () =>{
+    fetch("https://jsonplaceholder.typicode.com/users")
+    .then((res) => res.json())
+    .then((result) => {
+      setUsers(result)
+    })
+  }
+
+  useEffect(() => {
+    getAllPostDetails()
+    getAllTheUsers()      
+
+  }, [])
 
   return (
     <div className={classes.root}>
@@ -76,10 +106,10 @@ export default function Header() {
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
-        <User />
+        <User users={users} posts={posts}/>
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <Post />
+        <Post posts={posts} users={users}/>
       </TabPanel>
     </div>
   );

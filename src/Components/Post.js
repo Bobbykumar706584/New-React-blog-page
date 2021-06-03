@@ -11,7 +11,9 @@ import Button from '@material-ui/core/Button'
 import { useHistory } from 'react-router-dom';
 import Modal from '@material-ui/core/Modal';
 import Create from './Create';
-import Update from './Update'
+import Update from './Update';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 
 const useStyles = makeStyles((theme) => ({
     table: {
@@ -39,30 +41,58 @@ const useStyles = makeStyles((theme) => ({
   }));
 
 
-const Post = () => {
+const Post = ({posts, users}) => {
     const classes = useStyles();
-    const [posts, setPosts] = useState([]);
 	const history = useHistory();
     const [open, setOpen] = useState(false)
+    const [postId, setPostId] = useState(null)
+    const [snackOpen, snackSetOpen] = useState(false);
+    const [items, setItems] = useState([])
 
-    const handleClick = () =>{
+    const handleClick = (id) =>{
         setOpen(true)
+        setPostId(id)
     }
+
     const handleClose = () =>{
         setOpen(false)
     }
+    
+    const handleCloseSnack = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        snackSetOpen(false);
+    };
 
-    //fetching all the users
-    const fetchUserData = (e) =>{
-        fetch("http://localhost:8000/blogs/")
-        .then((res) => res.json())
-        .then((data) => setPosts(data))
-        .catch((err) =>{
-            console.log(err)
-        })
+    function Alert(props) {
+        return <MuiAlert elevation={4} variant="filled" {...props} />;
+    } 
+
+    const getAllDataById = () => {
+        const mergeById = (a2, a1) =>
+            a2.map(itm => ({
+                ...a1.find((item) => (item.id === itm.userId)),
+                ...itm
+            }));
+
+            // console.log(mergeById(responseTwo, responseOne))
+            setItems(mergeById(posts, users))
+    
     }
+    //fetching all the users
+    // const fetchUserData = (e) =>{
+    //     fetch("http://localhost:8000/blogs/")
+    //     .then((res) => res.json())
+    //     .then((data) => setPosts(data))
+    //     .catch((err) =>{
+    //         console.log(err)
+    //     })
+    // }
+
     //deleting users
     const handleDelete = (id) =>{
+        snackSetOpen(true)
         fetch("http://localhost:8000/blogs/"+id, {
 			method: "DELETE",
 		})
@@ -70,10 +100,13 @@ const Post = () => {
 			history.push('/')
             window.location.reload();
 		})
+        .catch((err) => {
+            console.log(err)
+        })
     }
 
     useEffect(() => {
-        fetchUserData()
+        getAllDataById()
     }, [])
     
     return(
@@ -86,12 +119,12 @@ const Post = () => {
                             <TableCell>Id</TableCell>
                             <TableCell>Title</TableCell>
                             <TableCell>Body</TableCell>
-                            <TableCell></TableCell>
-                            <TableCell></TableCell>
+                            <TableCell>Delete</TableCell>
+                            <TableCell>Edit</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {posts.map(post =>(
+                        {items.map(post =>(
                             <TableRow key={post.id}>
                                 <TableCell component="th" scope="row">
                                     {post.username}
@@ -103,26 +136,29 @@ const Post = () => {
                                     <Button variant="outlined" color="secondary" onClick={() => {handleDelete(post.id)}}>Delete</Button>
                                 </TableCell>
                                 <TableCell>
-                                    <Button variant="outlined" color="primary" onClick={handleClick}>Edit</Button>
+                                    <Button variant="outlined" color="primary" onClick={() => {handleClick(post.id)}}>Edit</Button>
                                 </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
                 </Table>
             </TableContainer>
+            <Snackbar open={snackOpen} autoHideDuration={6000} onClose={handleCloseSnack}>
+                <Alert severity="success">
+                    Post deleted successfully.
+                </Alert>
+            </Snackbar>
             <Create />
             <Modal
                 open={open}
                 onClose={handleClose}
-                aria-labelledby="simple-modal-title"
-                aria-describedby="simple-modal-description"
                 >
                 
                 <div className={classes.paper}>
                     <button className={classes.close} onClick={handleClose}>X</button>
                     <h2 id="simple-modal-title">Update blog</h2>
                     <hr/>
-                    <Update />
+                    <Update postId={postId} users={users} posts={posts}/>
                     <button onClick={handleClose}>Cancel</button>
                 </div>
             </Modal>
