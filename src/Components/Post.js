@@ -1,13 +1,13 @@
 import React, {useState, useEffect}from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import MUIDataTable from "mui-datatables";
-
-import { useHistory } from 'react-router-dom';
-import Modal from '@material-ui/core/Modal';
-import Create from './Create';
-import Update from './Update';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
+import Modal from '@material-ui/core/Modal';
+import { makeStyles } from '@material-ui/core/styles';
+import { useHistory } from 'react-router-dom';
+import MUIDataTable from "mui-datatables";
+import Create from './Create';
+import Update from './Update';
+import Comments from './Comments';
 
 const useStyles = makeStyles((theme) => ({
     table: {
@@ -16,18 +16,17 @@ const useStyles = makeStyles((theme) => ({
         border: "1px solid #eee",
         justifyContent: 'center'
     },
-    container:{
-        marginTop: '30px'
-    },
     paper: {
         position: 'relative',
         width: 700,
-        top: 250,
+        top: 200,
         left: 600,
         backgroundColor: theme.palette.background.paper,
         border: '2px solid #000',
         boxShadow: theme.shadows[5],
         padding: theme.spacing(2, 4, 3),
+        overflow: 'auto',
+        height: '70vh'
     },
     close:{
         float: "right",
@@ -42,6 +41,7 @@ const Post = ({posts, users}) => {
     const [postId, setPostId] = useState(null)
     const [snackOpen, snackSetOpen] = useState(false);
     const [items, setItems] = useState([])
+    const [openRow, setOpenRow] = useState(false)
 
     const handleClick = (id) =>{
         setOpen(true)
@@ -50,6 +50,16 @@ const Post = ({posts, users}) => {
 
     const handleClose = () =>{
         setOpen(false)
+    }
+
+    const rowClick = (id) =>{
+        setOpenRow(true)
+        setPostId(id)
+
+    }
+
+    const rowClose = () =>{
+        setOpenRow(false)
     }
     
     const handleCloseSnack = (event, reason) => {
@@ -63,6 +73,7 @@ const Post = ({posts, users}) => {
         return <MuiAlert elevation={4} variant="filled" {...props} />;
     } 
 
+    ///finding by id from two array of object
     const getAllDataById = () => {
         const mergeById = (a2, a1) =>
             a2.map(itm => ({
@@ -156,11 +167,13 @@ const Post = ({posts, users}) => {
           }
     ]; 
 
+    const handleRowClick = (rowData) => {
+        rowClick(rowData[1])
+    };
 
     const options = {
         filterType: 'checkbox',
-        selectableRows:'single',
-        selectableRowsOnClick: true,
+        onRowClick: handleRowClick,
     };
     return(
         <div className="container">
@@ -185,6 +198,16 @@ const Post = ({posts, users}) => {
                     <hr/>
                     <Update postId={postId} users={users} posts={posts}/>
                     <button onClick={handleClose}>Cancel</button>
+                </div>
+            </Modal>
+            <Modal
+                open={openRow}
+                onClose={rowClose}
+                >
+                <div className={classes.paper}>
+                    <button className={classes.close} onClick={rowClose}>X</button>
+                    <h2 id="simple-modal-title">Comments of user</h2>
+                    <Comments postId={postId}/>
                 </div>
             </Modal>
         </div>

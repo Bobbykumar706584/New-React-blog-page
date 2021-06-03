@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 const SinglePost = ({posts, id, username}) => {
     const [singlePost, setSinglePost] = useState([])
 
-
     const showRowbyUser = () => {
         const post = posts.filter(item => item.userId === id)
         setSinglePost(post)
