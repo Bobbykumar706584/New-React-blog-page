@@ -43,7 +43,7 @@ const Post = ({posts, users}) => {
     const [items, setItems] = useState([])
     const [openRow, setOpenRow] = useState(false)
 
-    const handleClick = (id) =>{
+    const handleClick = (e, id) =>{
         setOpen(true)
         setPostId(id)
     }
@@ -83,10 +83,8 @@ const Post = ({posts, users}) => {
             setItems(mergeById(posts, users))
     }
     //deleting users
-    const handleDelete = (item, index) =>{
-        snackSetOpen(true)
-        console.log(item[index])
-        
+    const handleDelete = (e, item, index) =>{
+        snackSetOpen(true)        
         fetch("https://jsonplaceholder.typicode.com/posts/"+item[index].id, {
 			method: "DELETE",
 		})
@@ -143,7 +141,7 @@ const Post = ({posts, users}) => {
                 empty: true,
                 customBodyRenderLite: (rowIndex) => {
                     return (
-                        <button onClick={() => {handleDelete(items, rowIndex)}}>
+                        <button onClick={(e) => {handleDelete(e.stopPropagation(), items, rowIndex)}}>
                             Delete 
                         </button>
                     );
@@ -158,7 +156,8 @@ const Post = ({posts, users}) => {
                 empty: true,
                 customBodyRender: (value, tableMeta, updateValue) => {
                     return (
-                        <button onClick={() => {handleClick(tableMeta.rowData[1])}}>
+                        <button onClick={(e) => {handleClick(e.stopPropagation(),tableMeta.rowData[1])}}>
+                        {/* // <button onClick={(e) => { console.log(e)}}> */}
                             Edit
                         </button>
                     );
@@ -167,10 +166,10 @@ const Post = ({posts, users}) => {
           }
     ]; 
 
-    const handleRowClick = (rowData) => {
+
+    const handleRowClick = (rowData, e) => {
         rowClick(rowData[1])
     };
-
     const options = {
         filterType: 'checkbox',
         onRowClick: handleRowClick,

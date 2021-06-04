@@ -4,7 +4,6 @@ import MUIDataTable from "mui-datatables";
 
 const Comments = ({ postId, username}) => {
     const [comments, setComments] = useState([])
-    console.log(username)
     const getCommentDataById = () => {
         fetch(`https://jsonplaceholder.typicode.com/posts/${postId}/comments`)
         .then((res) => res.json())
