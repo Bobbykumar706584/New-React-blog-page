@@ -12,7 +12,6 @@ const Update = ({users,postId}) => {
     const [open, setOpen] = useState(false);
     const [id, setId ] = useState('')
 
-
     const handleOpen = () => {
         setOpen(true);
     };
@@ -32,7 +31,6 @@ const Update = ({users,postId}) => {
     const handleUpdate = () => {
         setIsPending(true)
         const data = {title, body, username}
-        console.log(data)
 
         fetch("https://jsonplaceholder.typicode.com/posts/" + postId, {
             method: "PUT",
@@ -45,8 +43,6 @@ const Update = ({users,postId}) => {
         })
    }
 
-
-
    useEffect(() => {
         fetch("https://jsonplaceholder.typicode.com/posts/"+postId)
         .then(res => res.json())
@@ -56,9 +52,6 @@ const Update = ({users,postId}) => {
             setUsername(data.username)
             setId(data.id)
         }, [])
-
-
-
    }, [id])
 
     return (

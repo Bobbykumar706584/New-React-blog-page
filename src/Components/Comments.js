@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 import MUIDataTable from "mui-datatables";
 
 
-const Comments = ({ postId, username}) => {
+const Comments = ({ postId}) => {
     const [comments, setComments] = useState([])
+    
     const getCommentDataById = () => {
         fetch(`https://jsonplaceholder.typicode.com/posts/${postId}/comments`)
         .then((res) => res.json())
@@ -51,7 +52,6 @@ const Comments = ({ postId, username}) => {
     return (
         <div>
             <MUIDataTable
-              title={username}
               data={comments}
               columns={columns}
               options={options}

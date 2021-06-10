@@ -62,7 +62,7 @@ const Form = ()=> {
                 <label>Blog body: </label>
                 <textarea required value={body} onChange={(e) => setBody(e.target.value)}> </textarea>
                 <label>Blog Username: </label>
-                <select onChange={(e) => setUsername(e.target.value)}>
+                <select value={username} onChange={(e) => setUsername(e.target.value)}>
                     {usernames.map(item => (
                         <option value={item.username} required id={item.id}>{item.username}</option>
                     ))}

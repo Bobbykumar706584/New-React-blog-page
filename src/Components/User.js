@@ -1,34 +1,14 @@
-import { useState } from "react";
-import { makeStyles } from '@material-ui/core/styles';
+import { useContext, useState } from "react";
 import MUIDataTable from "mui-datatables";
 
 import Modal from '@material-ui/core/Modal';
 
 import SinglePost from './SinglePost';
+import { PostContext } from "../context/PostContext";
 
-const useStyles = makeStyles((theme) => ({
-  table: {
-    minWidth: 650,
-  },
-  paper: {
-    position: 'relative',
-    width: 700,
-    top: 200,
-    left: 600,
-    backgroundColor: theme.palette.background.paper,
-    border: '2px solid #000',
-    boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3),
-    overflow: 'auto',
-    height: '70vh'
-  },
-  close:{
-    float: "right",
-  }
-}));
 
 const User = ({users, posts}) =>{
-    const classes = useStyles();
+    const {classes} = useContext(PostContext)
     const [open, setOpen] = useState(false)
     const [id, setId] = useState(null)
     const [username, setUsername] = useState('')
@@ -96,12 +76,13 @@ const User = ({users, posts}) =>{
     const handleRowClick = (rowData) => {
       handleClick(rowData[0], rowData[2])
       console.log(rowData)
-  };
+    };
 
     const options = {
       filterType: 'checkbox',
       onRowClick: handleRowClick,
     };
+
     return (
       <div>
         <MUIDataTable
@@ -118,8 +99,8 @@ const User = ({users, posts}) =>{
             <button className={classes.close} onClick={handleClose}>X</button>
             <SinglePost posts={posts} id={id} username={username}/>
           </div>
-      </Modal>
-  </div>
+        </Modal>
+      </div>
    );
 }
 

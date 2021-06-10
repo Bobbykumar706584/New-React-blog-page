@@ -6,12 +6,13 @@ import Group from '@material-ui/icons/Group';
 import PersonPinIcon from '@material-ui/icons/PersonPin';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
+
 import User from './User';
 import Post from './Post';
+import PostContextProvider from '../context/PostContext';
 
 import { useEffect, useState } from "react";
 import { makeStyles } from '@material-ui/core/styles';
-
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -96,25 +97,27 @@ export default function Header() {
 
   return (
     <div className={classes.root}>
-      <AppBar position="static" color="default">
-        <Tabs
-          value={value}
-          onChange={handleChange}
-          variant="scrollable"
-          scrollButtons="on"
-          indicatorColor="primary"
-          textColor="primary"
-        >
-            <Tab label="Users" icon={<Group />} {...a11yProps(0)} />
-          <Tab label="Posts" icon={<PersonPinIcon />} {...a11yProps(1)} />
-        </Tabs>
-      </AppBar>
-      <TabPanel value={value} index={0}>
-        <User users={users} posts={posts}/>
-      </TabPanel>
-      <TabPanel value={value} index={1}>
-        <Post posts={posts} users={users}/>
-      </TabPanel>
+      <PostContextProvider>
+        <AppBar position="static" color="default">
+          <Tabs
+            value={value}
+            onChange={handleChange}
+            variant="scrollable"
+            scrollButtons="on"
+            indicatorColor="primary"
+            textColor="primary"
+          >
+              <Tab label="Users" icon={<Group />} {...a11yProps(0)} />
+            <Tab label="Posts" icon={<PersonPinIcon />} {...a11yProps(1)} />
+          </Tabs>
+        </AppBar>
+        <TabPanel value={value} index={0}>
+          <User users={users} posts={posts}/>
+        </TabPanel>
+        <TabPanel value={value} index={1}>
+          <Post posts={posts} users={users}/>
+        </TabPanel>
+      </PostContextProvider>  
     </div>
   );
 }

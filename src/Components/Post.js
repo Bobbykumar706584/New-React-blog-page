@@ -1,4 +1,4 @@
-import React, {useState, useEffect}from 'react';
+import React, {useState, useEffect, useContext}from 'react';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import Modal from '@material-ui/core/Modal';
@@ -8,35 +8,12 @@ import MUIDataTable from "mui-datatables";
 import Create from './Create';
 import Update from './Update';
 import Comments from './Comments';
-
-const useStyles = makeStyles((theme) => ({
-    table: {
-        minWidth: 650,
-        marginTop: "30px",
-        border: "1px solid #eee",
-        justifyContent: 'center'
-    },
-    paper: {
-        position: 'relative',
-        width: 700,
-        top: 200,
-        left: 600,
-        backgroundColor: theme.palette.background.paper,
-        border: '2px solid #000',
-        boxShadow: theme.shadows[5],
-        padding: theme.spacing(2, 4, 3),
-        overflow: 'auto',
-        height: '70vh'
-    },
-    close:{
-        float: "right",
-    }
-  }));
+import { PostContext } from '../context/PostContext';
 
 
 const Post = ({posts, users}) => {
-    const classes = useStyles();
-	const history = useHistory();
+    const {classes} = useContext(PostContext)
+    const history = useHistory();
     const [open, setOpen] = useState(false)
     const [postId, setPostId] = useState(null)
     const [snackOpen, snackSetOpen] = useState(false);
