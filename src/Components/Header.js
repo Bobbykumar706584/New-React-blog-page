@@ -9,9 +9,9 @@ import Box from '@material-ui/core/Box';
 
 import User from './User';
 import Post from './Post';
-import PostContextProvider from '../context/PostContext';
+import PostContextProvider, { PostContext } from '../context/PostContext';
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { makeStyles } from '@material-ui/core/styles';
 
 function TabPanel(props) {
@@ -58,42 +58,10 @@ const useStyles = makeStyles((theme) => ({
 export default function Header() {
   const classes = useStyles();
   const [value, setValue] = useState(0);
-  const [users, setUsers] = useState([])
-  const [posts, setPosts] = useState([])
-
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-
-  const getAllPostDetails = () => {
-    fetch('https://jsonplaceholder.typicode.com/posts')
-    .then((responses) => responses.json())
-    .then(data => {
-      setPosts(data)
-    })
-    .catch(err => {
-      console.error(err)
-    })
-  }
-
-  const getAllTheUsers = () =>{
-    fetch("https://jsonplaceholder.typicode.com/users")
-    .then((res) => res.json())
-    .then((result) => {
-      const showUser = result.map(user => {
-        user.company = user.company.name
-        return user
-      })
-      setUsers(showUser)      
-    })
-  }
-
-  useEffect(() => {
-    getAllPostDetails()
-    getAllTheUsers()      
-
-  }, [])
 
   return (
     <div className={classes.root}>
@@ -112,10 +80,10 @@ export default function Header() {
           </Tabs>
         </AppBar>
         <TabPanel value={value} index={0}>
-          <User users={users} posts={posts}/>
+          <User/>
         </TabPanel>
         <TabPanel value={value} index={1}>
-          <Post posts={posts} users={users}/>
+          <Post/>
         </TabPanel>
       </PostContextProvider>  
     </div>

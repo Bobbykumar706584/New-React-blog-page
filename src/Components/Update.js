@@ -1,27 +1,25 @@
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
-import { useState, useEffect } from "react"
-import { useHistory } from "react-router-dom"
+import { useState, useEffect, useContext } from "react"
+import { PostContext } from '../context/PostContext';
 
-const Update = ({users,postId}) => {
-    const [title, setTitle] = useState("")
-    const [body, setBody] = useState("");
-    const [username, setUsername] = useState("")
-    const history = useHistory()
-    const [isPending, setIsPending] = useState(false);
-    const [open, setOpen] = useState(false);
+const Update = ({postId}) => {
+    const {
+        users, 
+        title, 
+        setTitle, 
+        body, 
+        setBody, 
+        username, 
+        setUsername, 
+        history, 
+        isPending, 
+        setIsPending,
+        open,
+        handleClose,
+        handleOpen} = useContext(PostContext)
+        
     const [id, setId ] = useState('')
-
-    const handleOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClose = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-        setOpen(false);
-    };
 
     function Alert(props) {
         return <MuiAlert elevation={4} variant="filled" {...props} />;
@@ -62,6 +60,7 @@ const Update = ({users,postId}) => {
             <textarea value={body} onChange={(e) => setBody(e.target.value)}> </textarea>
             <label>Blog username: </label>
              <select value={username} onChange={(e) => setUsername(e.target.value)}>
+                 <option>Select</option>
                 {users.map(item => (
                     <option value={item.username}>{item.username}</option>
                 ))}

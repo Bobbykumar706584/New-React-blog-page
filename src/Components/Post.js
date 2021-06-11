@@ -11,8 +11,8 @@ import Comments from './Comments';
 import { PostContext } from '../context/PostContext';
 
 
-const Post = ({posts, users}) => {
-    const {classes} = useContext(PostContext)
+const Post = () => {
+    const {classes, posts, users} = useContext(PostContext)
     const history = useHistory();
     const [open, setOpen] = useState(false)
     const [postId, setPostId] = useState(null)
@@ -67,6 +67,7 @@ const Post = ({posts, users}) => {
 		})
 		.then(() => {
 			history.push('/')
+            window.location.reload()
 		})
         .catch((err) => {
             console.log(err)
@@ -172,7 +173,7 @@ const Post = ({posts, users}) => {
                     <button className={classes.close} onClick={handleClose}>X</button>
                     <h2 id="simple-modal-title">Update blog</h2>
                     <hr/>
-                    <Update postId={postId} users={users} posts={posts}/>
+                    <Update postId={postId}/>
                     <button onClick={handleClose}>Cancel</button>
                 </div>
             </Modal>

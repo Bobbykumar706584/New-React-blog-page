@@ -7,8 +7,8 @@ import SinglePost from './SinglePost';
 import { PostContext } from "../context/PostContext";
 
 
-const User = ({users, posts}) =>{
-    const {classes} = useContext(PostContext)
+const User = () =>{
+    const {classes, users, posts} = useContext(PostContext)
     const [open, setOpen] = useState(false)
     const [id, setId] = useState(null)
     const [username, setUsername] = useState('')
@@ -97,7 +97,7 @@ const User = ({users, posts}) =>{
           >
           <div className={classes.paper}>
             <button className={classes.close} onClick={handleClose}>X</button>
-            <SinglePost posts={posts} id={id} username={username}/>
+            <SinglePost id={id} username={username}/>
           </div>
         </Modal>
       </div>

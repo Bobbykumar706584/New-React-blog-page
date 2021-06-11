@@ -1,8 +1,11 @@
 import MUIDataTable from "mui-datatables";
+import { useContext } from "react";
 
 import { useEffect, useState } from "react";
+import { PostContext } from "../context/PostContext";
 
-const SinglePost = ({posts, id, username}) => {
+const SinglePost = ({id, username}) => {
+    const {posts} = useContext(PostContext);
     const [singlePost, setSinglePost] = useState([])
 
     const showRowbyUser = () => {

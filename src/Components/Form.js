@@ -1,40 +1,30 @@
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useHistory } from "react-router-dom";
+import { PostContext } from '../context/PostContext';
 
 const Form = ()=> {
-    const [title, setTitle] = useState("");
-    const [body, setBody] = useState("");
-    const [usernames, setUsernames] = useState([])
-    const [username, setUsername] = useState('')
-    const history = useHistory() 
-    const [open, setOpen] = useState(false);
-    const [isPending, setIsPending] = useState(false);
-
-    const handleOpen = () => {
-        setOpen(true);
-    };
+    const {
+        users, 
+        title, 
+        setTitle, 
+        body, 
+        setBody, 
+        username, 
+        setUsername, 
+        history, 
+        isPending, 
+        setIsPending,
+        open,
+        handleClose,
+        handleOpen
+        } = useContext(PostContext)
     
-    const handleClose = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-        setOpen(false);
-    };
-
     function Alert(props) {
         return <MuiAlert elevation={4} variant="filled" {...props} />;
     }  
-
-    const getAllUser = () => {
-        fetch("https://jsonplaceholder.typicode.com/users")
-        .then(res => res.json())
-        .then(data => {
-            setUsernames(data)
-        })
-    }
 
     const handleSubmit = () => {
         const blog = {title, body, username}
@@ -51,10 +41,6 @@ const Form = ()=> {
         })
     }
 
-    useEffect(() => {
-        getAllUser()
-    }, [])
-
     return(
         <form onSubmit={handleSubmit} className="create">
             <label>Blog title: </label>
@@ -63,7 +49,8 @@ const Form = ()=> {
                 <textarea required value={body} onChange={(e) => setBody(e.target.value)}> </textarea>
                 <label>Blog Username: </label>
                 <select value={username} onChange={(e) => setUsername(e.target.value)}>
-                    {usernames.map(item => (
+                    <option>Select</option>
+                    {users.map(item => (
                         <option value={item.username} required id={item.id}>{item.username}</option>
                     ))}
                 </select>
